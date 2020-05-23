@@ -3,6 +3,19 @@ defmodule CredoEcto.Check.Ecto.HasManyOnDeleteTest do
 
   alias CredoEcto.Check.Ecto.HasManyOnDelete
 
+  test "does not report when has_many is not in schema" do
+    """
+    defmodule User do
+      embedded_schema "users" do
+        has_many :posts, Post
+      end
+    end
+    """
+    |> to_source_file
+    |> run_check(HasManyOnDelete)
+    |> refute_issues()
+  end
+
   test "does not report when on_delete is set" do
     """
     defmodule User do

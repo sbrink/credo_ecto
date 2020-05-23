@@ -20,30 +20,37 @@ defmodule CredoEcto.Check.Ecto.HasManyOnDelete do
   end
 
   # Private functions
-  defp traverse({:has_many, meta, [_, _, opts]} = ast, issues, issue_meta) do
-    if Keyword.has_key?(opts, :on_delete) do
-      {ast, issues}
-    else
-      issues = [issue_for("has_many", issue_meta, meta[:line]) | issues]
-      {ast, issues}
-    end
-  end
-
-  defp traverse({:has_many, meta, [_, opts]} = ast, issues, issue_meta) when is_list(opts) do
-    if Keyword.has_key?(opts, :on_delete) do
-      {ast, issues}
-    else
-      issues = [issue_for("has_many", issue_meta, meta[:line]) | issues]
-      {ast, issues}
-    end
-  end
-
-  defp traverse({:has_many, meta, [_, _]} = ast, issues, issue_meta) do
-    issues = [issue_for("has_many", issue_meta, meta[:line]) | issues]
+  defp traverse({:schema, _meta, _} = ast, issues, issue_meta) do
+    issues = Credo.Code.prewalk(ast, &traverse_schema(&1, &2, issue_meta), issues)
     {ast, issues}
   end
 
   defp traverse(ast, issues, _), do: {ast, issues}
+
+  defp traverse_schema({:has_many, meta, [_, _, opts]} = ast, issues, issue_meta) do
+    if Keyword.has_key?(opts, :on_delete) do
+      {ast, issues}
+    else
+      issues = [issue_for("has_many", issue_meta, meta[:line]) | issues]
+      {ast, issues}
+    end
+  end
+
+  defp traverse_schema({:has_many, meta, [_, opts]} = ast, issues, issue_meta) when is_list(opts) do
+    if Keyword.has_key?(opts, :on_delete) do
+      {ast, issues}
+    else
+      issues = [issue_for("has_many", issue_meta, meta[:line]) | issues]
+      {ast, issues}
+    end
+  end
+
+  defp traverse_schema({:has_many, meta, [_, _]} = ast, issues, issue_meta) do
+    issues = [issue_for("has_many", issue_meta, meta[:line]) | issues]
+    {ast, issues}
+  end
+
+  defp traverse_schema(ast, issues, _), do: {ast, issues}
 
   defp issue_for(trigger, issue_meta, line_no) do
     format_issue(
