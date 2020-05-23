@@ -29,6 +29,19 @@ defmodule CredoEcto.Check.Ecto.HasManyOnDeleteTest do
     |> refute_issues()
   end
 
+  test "does not report when on_delete is set with options only" do
+    """
+    defmodule User do
+      schema "users" do
+        has_many :tags, through: [:posts], on_delete: :nothing
+      end
+    end
+    """
+    |> to_source_file
+    |> run_check(HasManyOnDelete)
+    |> refute_issues()
+  end
+
   test "does report when on_delete is missing without options" do
     """
     defmodule User do

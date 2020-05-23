@@ -29,6 +29,15 @@ defmodule CredoEcto.Check.Ecto.HasManyOnDelete do
     end
   end
 
+  defp traverse({:has_many, meta, [_, opts]} = ast, issues, issue_meta) when is_list(opts) do
+    if Keyword.has_key?(opts, :on_delete) do
+      {ast, issues}
+    else
+      issues = [issue_for("has_many", issue_meta, meta[:line]) | issues]
+      {ast, issues}
+    end
+  end
+
   defp traverse({:has_many, meta, [_, _]} = ast, issues, issue_meta) do
     issues = [issue_for("has_many", issue_meta, meta[:line]) | issues]
     {ast, issues}
