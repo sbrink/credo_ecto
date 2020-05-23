@@ -1,18 +1,11 @@
 defmodule CredoEcto do
-  @moduledoc """
-  Documentation for `CredoEcto`.
-  """
+  @moduledoc false
+  @config_file File.read!(".credo.exs")
 
-  @doc """
-  Hello world.
+  import Credo.Plugin
 
-  ## Examples
-
-      iex> CredoEcto.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def init(exec) do
+    exec
+    |> register_default_config(@config_file)
   end
 end
