@@ -2,7 +2,7 @@ defmodule CredoEcto.Check.Ecto.HasManyOnDelete do
   @moduledoc false
 
   use Credo.Check,
-    base_priority: :low,
+    base_priority: :high,
     tags: [:ecto],
     explanations: [
       check: """
