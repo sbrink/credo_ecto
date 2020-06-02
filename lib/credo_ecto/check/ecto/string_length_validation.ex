@@ -24,7 +24,6 @@ defmodule CredoEcto.Check.Ecto.StringLengthValidation do
       string_fields
       |> Enum.filter(fn {field, _} -> field not in validation_fields end)
       |> Enum.map(fn {field, meta} -> issue_for(field, issue_meta, meta[:line]) end)
-      |> IO.inspect()
     else
       []
     end
